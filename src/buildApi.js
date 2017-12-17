@@ -70,7 +70,9 @@ export default function buildApi(endpoints, config = {}) {
       pendingPromises[promiseId] = req;
 
       const promise = req
-        .then(afterResolve)
+        .then((result) => {
+          return afterResolve({ ...result, endpoint: key })
+        })
         .then((result) => {
           delete pendingPromises[promiseId];
           return result;
