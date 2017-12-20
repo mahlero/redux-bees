@@ -71,7 +71,7 @@ export default function buildApi(endpoints, config = {}) {
 
       const promise = req
         .then((result) => {
-          return afterResolve({ ...result, endpoint: key })
+          return afterResolve({ ...result, endpoint: key, path, placeholders })
         })
         .then((result) => {
           delete pendingPromises[promiseId];
@@ -81,7 +81,9 @@ export default function buildApi(endpoints, config = {}) {
           delete pendingPromises[promiseId];
           return Promise.reject(error);
         })
-        .catch(afterReject);
+        .catch((result) => {
+          return afterReject({ ...result, endpoint: key, path, placeholders })
+        });
 
       promise.actionName = key;
       promise.params = args;
